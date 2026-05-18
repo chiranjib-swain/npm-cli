@@ -53,7 +53,9 @@ const parseField = (f, key, opts, listElement = false) => {
   }
 
   f = envReplace(f, env)
-
+  if (key === 'authToken' || key.includes('authToken')) {
+  console.log(`[envReplace] key: ${key}, original: ${arguments[0]}, replaced: ${f}`)
+  }
   if (isDate) {
     return new Date(f)
   }

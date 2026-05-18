@@ -40,3 +40,15 @@ t.equal(parseField('0777', 'umask', opts), 0o777, 'valid umask is parsed')
 t.equal(parseField('777', 'umask', opts), 777, 'valid umask is parsed')
 
 t.same(parseField('2020', 'before', opts), new Date('2020'), 'date is parsed')
+
+t.test('env variable substitution for npmrc auth token', t => {
+  const optsWithToken = {
+    ...opts,
+    env: { ...opts.env, NODE_AUTH_TOKEN: 'TEST-TOKEN-123' },
+    types: { authToken: [String] },
+  }
+  const input = '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}'
+  const result = parseField(input, 'authToken', optsWithToken)
+  t.equal(result, '//registry.npmjs.org/:_authToken=TEST-TOKEN-123', 'should substitute NODE_AUTH_TOKEN in npmrc line')
+  t.end()
+})
